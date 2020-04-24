@@ -45,11 +45,11 @@ map.on('load', function() {
     'id': 'complaintLayer',
     'source': 'complaints',
     'type': 'circle',
-    'filter':
-      ['any',
-        ['==', ['get', 'descriptor'], 'Social Distancing'],
-        ['>=', ['get', '"created_date"'], '2020-03-01T00:00:00.000'],
-      ],
+    // 'filter':
+    //   ['any',
+    //     // ['==', ['get', 'descriptor'], 'Social Distancing'],
+    //     ['>=', ['get', '"created_date"'], '2020-03-01T00:00:00.000'],
+    //   ],
     'paint': {
       'circle-radius': 5,
       'circle-opacity':
@@ -114,20 +114,28 @@ map.on('load', function() {
 
   map.on('click', 'complaintLayer', function (e) {
 
-    var complaintDate = e.features[0].properties.created_date
-    var complaintDateSliced = complaintDate.slice(0, 10)
-    var complaintTimeSliced = complaintDate.slice(11, 16)
+    var complaintDate = e.features[0].properties.created_date // floating timestamp
+    var complaintDateSliced = complaintDate.slice(0, 10) // year-month-day
+    var complaintTimeSliced = complaintDate.slice(11, 16) // time of day in military time
+
+    var complaintAMPM = complaintTimeSliced >= 12 ? 'PM' : 'AM' // am pm variable
+    var complaintMin = complaintDate.slice(13, 16) // min variable
+    var complaintHour12 = complaintTimeSliced % 12 ? complaintTimeSliced % 12 : 12 // convert military time variable
 
     var closedDate = e.features[0].properties.closed_date
     var closedDateSliced = closedDate.slice(0, 10)
     var closedTimeSliced = closedDate.slice(11, 16)
 
+    var closedAMPM = closedTimeSliced >= 12 ? 'PM' : 'AM'
+    var closedMin = closedDate.slice(13, 16)
+    var closedHour12 = closedTimeSliced % 12 ? closedTimeSliced % 12 : 12
+
     var popupHTML = 'Complaint Date:' + ' ' + complaintDateSliced.bold() + '<br >' +
-    'Complaint Time:' + ' ' + complaintTimeSliced.bold() + '<br >' +
+    'Complaint Time:' + ' ' + complaintHour12 + complaintMin + ' ' + complaintAMPM + '<br >' +
     'Responding Agency:' + ' ' + e.features[0].properties.agency.bold() + '<br >' +
     'Complaint Description:' + ' ' + e.features[0].properties.descriptor.bold() + '<br >' +
     'Closed Date:' + ' ' + closedDateSliced.bold() + '<br >' +
-    'Closed Time:' + ' ' + closedTimeSliced.bold() + '<br >' +
+    'Closed Time:' + ' ' + closedHour12 + closedMin + ' ' + closedAMPM + '<br >' +
     'Incident Address:' + ' ' + e.features[0].properties.incident_address.bold() + '<br >' +
     'Location Type:' + ' ' + e.features[0].properties.location_type.bold()
 
