@@ -115,16 +115,21 @@ map.on('load', function() {
   map.on('click', 'complaintLayer', function (e) {
 
     var complaintDate = e.features[0].properties.created_date
+    var complaintDateSliced = complaintDate.slice(0, 10)
+    var complaintTimeSliced = complaintDate.slice(11, 16)
 
-    var cdSliced = complaintDate.slice(0, 10)
+    var closedDate = e.features[0].properties.closed_date
+    var closedDateSliced = closedDate.slice(0, 10)
+    var closedTimeSliced = closedDate.slice(11, 16)
 
-    var popupHTML = 'Complaint Date:' + ' ' +
-    cdSliced.bold() + '<br >' + 'Responding Agency:' + ' ' +
-    e.features[0].properties.agency.bold() + '<br >' + 'Complaint Description:' + ' ' +
-    e.features[0].properties.descriptor.bold() + '<br >' + 'Closed Date:' + ' ' +
-    e.features[0].properties.closed_date.bold() + '<br >' + 'Incident Address:' + ' ' +
-    e.features[0].properties.incident_address.bold() + '<br >' + 'Location Type:' + ' ' +
-    e.features[0].properties.location_type.bold()
+    var popupHTML = 'Complaint Date:' + ' ' + complaintDateSliced.bold() + '<br >' +
+    'Complaint Time:' + ' ' + complaintTimeSliced.bold() + '<br >' +
+    'Responding Agency:' + ' ' + e.features[0].properties.agency.bold() + '<br >' +
+    'Complaint Description:' + ' ' + e.features[0].properties.descriptor.bold() + '<br >' +
+    'Closed Date:' + ' ' + closedDateSliced.bold() + '<br >' +
+    'Closed Time:' + ' ' + closedTimeSliced.bold() + '<br >' +
+    'Incident Address:' + ' ' + e.features[0].properties.incident_address.bold() + '<br >' +
+    'Location Type:' + ' ' + e.features[0].properties.location_type.bold()
 
     complaintPopup
     .setLngLat(e.lngLat)
